@@ -60,8 +60,12 @@ In this first stage, you will explore the `diamonds` dataset and document your o
 ## TASK: Plot `price` vs `carat` below
 
 ggplot(data = diamonds, aes(x = price, y = carat)) +
-  ggtitle("Plot of Price Values vs Diamond Carats") +
-  geom_point()
+  geom_point() +
+  labs(
+    title = "Plot of Price Values vs Diamond Carats",
+    x = "Price (USD)",
+    y = "Carat"
+  )
 
 ```
 
@@ -79,8 +83,13 @@ ggplot(data = diamonds, aes(x = price, y = carat)) +
 ## TASK: Plot `price`, `carat`, and `cut` below
 
 ggplot(data = diamonds, aes(x = price, y = carat, color = cut)) +
-  ggtitle("Plot of Price Values vs Diamond Carats with Cut Quality") +
-  geom_point()
+  geom_point() +
+  labs(
+    title = "Plot of Price Values vs Diamond Carats with Cut Quality",
+    x = "Price (USD)",
+    y = "Carat",
+    color = "Cut Quality"
+  )
 
 ```
 

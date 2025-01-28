@@ -99,8 +99,12 @@ document your observations.
 ## TASK: Plot `price` vs `carat` below
 
 ggplot(data = diamonds, aes(x = price, y = carat)) +
-  ggtitle("Plot of Price Values vs Diamond Carats") +
-  geom_point()
+  geom_point() +
+  labs(
+    title = "Plot of Price Values vs Diamond Carats",
+    x = "Price (USD)",
+    y = "Carat"
+  )
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/q1-task-1.png)<!-- -->
@@ -130,8 +134,13 @@ ggplot(data = diamonds, aes(x = price, y = carat)) +
 ## TASK: Plot `price`, `carat`, and `cut` below
 
 ggplot(data = diamonds, aes(x = price, y = carat, color = cut)) +
-  ggtitle("Plot of Price Values vs Diamond Carats with Cut Quality") +
-  geom_point()
+  geom_point() +
+  labs(
+    title = "Plot of Price Values vs Diamond Carats with Cut Quality",
+    x = "Price (USD)",
+    y = "Carat",
+    color = "Cut Quality"
+  )
 ```
 
 ![](c00-diamonds-assignment_files/figure-gfm/q2-task-1.png)<!-- -->

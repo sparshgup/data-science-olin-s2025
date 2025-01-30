@@ -1,7 +1,7 @@
 RMS Titanic
 ================
-(Your name here)
-2020-
+Sparsh Gupta
+2025-01-30
 
 - [Grading Rubric](#grading-rubric)
   - [Individual](#individual)

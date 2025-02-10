@@ -175,7 +175,9 @@ df_titanic %>% summarize(total = sum(n))
 
 ``` r
 ## TASK: Visualize counts against `Class` and `Sex`
-ggplot(data = df_titanic %>% filter(Survived == "Yes"), aes(x = Class, y = n, fill = Sex)) +
+df_titanic %>%
+  filter(Survived == "Yes") %>%
+  ggplot(aes(Class, n, fill = Sex)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(
     title = "Count of Survivors by Class and Sex",
@@ -270,7 +272,9 @@ df_prop
 ### **q4** Replicate your visual from q3, but display `Prop` in place of `n`. Document your observations, and note any new/different observations you make in comparison with q3. Is there anything *fishy* in your plot?
 
 ``` r
-ggplot(data = df_prop %>% filter(Survived == "Yes"), aes(x = Class, y = Prop, fill = Sex)) +
+df_prop %>%
+  filter(Survived == "Yes") %>%
+  ggplot(aes(Class, Prop, fill = Sex)) +
   geom_bar(stat = "identity", position = "dodge", na.rm = TRUE) +
   labs(
     title = "Proportion of Survivors by Class and Sex",
@@ -374,8 +378,7 @@ ggplot(data = df_prop %>% filter(Survived == "Yes"), aes(x = Class, y = Prop, fi
     indicates that females were prioritized to get on the lifeboats
     first after the accident.
   - 1st-class adults had the best survival rate, likely due to better
-    access to lifeboats and societal norms favoring women and children
-    first.
+    access to lifeboats.
   - 3rd-class adults had the lowest survival proportions, reflecting
     that lower-class passengers had limited access to lifeboats.
   - Crew adult females had a significantly higher survival rate compared

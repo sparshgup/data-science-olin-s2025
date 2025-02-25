@@ -79,7 +79,7 @@ df_stang_long <-
   ) %>%
   mutate(angle = as.integer(angle)) %>%
   drop_na() %>%
-  filter(E != -1)
+  filter(E > 0)
 
 df_stang_long
 ```
@@ -166,10 +166,12 @@ df_stang_long %>%
 df_stang_long %>%
   ggplot(aes(factor(angle), E, fill = factor(angle))) +
   geom_boxplot() +
-  labs(title = "Elasticity (E) vs. Testing Angle",
-       x = "Testing Angle (degrees)",
-       y = "Elasticity (E)",
-       fill = "Angle") +
+  labs(
+    title = "Elasticity (E) vs. Testing Angle",
+    x = "Testing Angle (degrees)",
+    y = "Elasticity (E)",
+    fill = "Angle"
+  ) +
   theme_minimal()
 
 ```
@@ -218,22 +220,18 @@ df_stang_long %>%
     -   Possible reasons for the observed variation:
 
         -   Measurement errors or experimental limitations.
-
-        <!-- -->
-
+        -   A significant factor to consider is the potential difference in measuring tools used. If a different measuring tool was used for the 0.081-inch thickness samples compared to the other thicknesses, this could have introduced systematic measurement errors, leading to the noticeably lower elasticity values observed for the 0.081-inch samples.
+        -   Potential edge effects or surface imperfections in thicker samples that could impact elasticity measurements.
+        -   Residual stresses introduced during manufacturing, particularly affecting thicker samples.
         -   Small differences in microstructure or manufacturing conditions (e.g., rolling direction effects).
-
         -   Other unaccounted-for factors influencing the results.
 
     -   Additional information that could help:
 
         -   More controlled experiments where only thickness is varied while keeping all other factors constant.
-
-        <!-- -->
-
         -   A larger dataset with more samples at each thickness level to determine whether this pattern holds consistently.
-
         -   A theoretical justification that explains whether such variations in elasticity with thickness are expected.
+        -   Cross-verification using consistent measurement tools across all thicknesses to rule out discrepancies caused by equipment.
 
 # References
 

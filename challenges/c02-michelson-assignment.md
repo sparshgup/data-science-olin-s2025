@@ -168,6 +168,18 @@ df_q1 %>%
 - That standard deviation within each category could provide further
   insights into measurement variability.
 
+**Possible hypothesis for the discrepancy between our table and
+Michelson’s original table:**
+
+- Michelson may have excluded certain measurements due to experimental
+  conditions or errors that were not recorded in our dataset.
+
+- Michelson may have applied different rounding conventions when
+  computing the mean velocity, leading to slight variations.
+
+- If the data was transcribed manually from Michelson’s publication,
+  there could be small errors in recorded values.
+
 The `Velocity` values in the dataset are the speed of light *in air*;
 Michelson introduced a couple of adjustments to estimate the speed of
 light in a vacuum. In total, he added $+92$ km/s to his mean estimate
@@ -360,8 +372,7 @@ Similarities:
   (`LIGHTSPEED_MICHELSON +/- LIGHTSPEED_PM`).
 
 - Spread of data points: The individual measurements (dots) in both
-  cases appear scattered around a central value, roughly following a
-  normal distribution.
+  cases appear scattered around a central value.
 
 Differences:
 
@@ -437,8 +448,11 @@ df_q2 %>%
 
 **Observations**:
 
-- There is a slight positive correlation between the Velocity (in
-  Vacuum) and Temperature, as shown by the blue regression line.
+- While the regression line suggests a slight positive correlation
+  between velocity (in vacuum) and temperature, the data points exhibit
+  a high degree of scatter. This suggests that any relationship between
+  temperature and measured velocity most probably does not, and is very
+  weak if it exists at all.
 
 - Higher temperatures appear to be associated with higher measured
   velocities.
@@ -465,12 +479,11 @@ df_q2 %>%
 
 **Observations**:
 
-- From this box plot, we can observe that higher Distinctness leads to
-  slightly higher velocity estimates as the median vacuum velocity is
-  slightly higher for Distinctness 3 (Good) compared to 1 (Poor) and 2
-  (Fair). This suggests that clearer measurements may have been more
-  prone to systematic bias, potentially overestimating the speed of
-  light.
+- From this box plot, we notice that while the median vacuum velocity
+  appears slightly higher for Distinctness 3 (Good) compared to
+  Distinctness 1 (Poor) and 2 (Fair), the substantial overlap between
+  the boxplots suggests that this trend is weak and may not be
+  statistically significant. 
 
 - Distinctness 1 (Poor) has a lower minimum value for its interquartile
   range, suggesting that poor-quality measurements occasionally led to

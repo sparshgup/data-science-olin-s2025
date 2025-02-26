@@ -1,7 +1,7 @@
 ---
 title: "Gapminder"
-author: "(Your name here)"
-date: 2020-
+author: "Sparsh Gupta"
+date: 2025-02-25
 output:
   github_document:
     toc: true
@@ -12,17 +12,20 @@ prerequisites:
 *Purpose*: Learning to do EDA well takes practice! In this challenge you'll further practice EDA by first completing a guided exploration, then by conducting your own investigation. This challenge will also give you a chance to use the wide variety of visual tools we've been learning.
 
 <!-- include-rubric -->
+
 # Grading Rubric
+
 <!-- -------------------------------------------------- -->
 
 Unlike exercises, **challenges will be graded**. The following rubrics define how you will be graded, both on an individual and team basis.
 
 ## Individual
+
 <!-- ------------------------- -->
 
 | Category | Needs Improvement | Satisfactory |
-|----------|----------------|--------------|
-| Effort | Some task __q__'s left unattempted | All task __q__'s attempted |
+|-------------------|----------------------------|-------------------------|
+| Effort | Some task **q**'s left unattempted | All task **q**'s attempted |
 | Observed | Did not document observations, or observations incorrect | Documented correct observations based on analysis |
 | Supported | Some observations not clearly supported by analysis | All observations clearly supported by analysis (table, graph, etc.) |
 | Assessed | Observations include claims not supported by the data, or reflect a level of certainty not warranted by the data | Observations are appropriately qualified by the quality & relevance of the data and (in)conclusiveness of the support |
@@ -30,10 +33,10 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 | Code Styled | Violations of the [style guide](https://style.tidyverse.org/) hinder readability | Code sufficiently close to the [style guide](https://style.tidyverse.org/) |
 
 ## Submission
+
 <!-- ------------------------- -->
 
 Make sure to commit both the challenge report (`report.md` file) and supporting files (`report_files/` folder) when you are done! Then submit a link to Canvas. **Your Challenge submission is not complete without all files uploaded to GitHub.**
-
 
 ```{r setup}
 library(tidyverse)
@@ -41,36 +44,59 @@ library(gapminder)
 
 ```
 
-*Background*: [Gapminder](https://www.gapminder.org/about-gapminder/) is an
-independent organization that seeks to educate people about the state of the
-world. They seek to counteract the worldview constructed by a hype-driven media
-cycle, and promote a "fact-based worldview" by focusing on data. The dataset
-we'll study in this challenge is from Gapminder.
+*Background*: [Gapminder](https://www.gapminder.org/about-gapminder/) is an independent organization that seeks to educate people about the state of the world. They seek to counteract the worldview constructed by a hype-driven media cycle, and promote a "fact-based worldview" by focusing on data. The dataset we'll study in this challenge is from Gapminder.
 
 # Guided EDA
+
 <!-- -------------------------------------------------- -->
 
 First, we'll go through a round of *guided EDA*. Try to pay attention to the high-level process we're going through---after this guided round you'll be responsible for doing another cycle of EDA on your own!
 
-### __q0__ Perform your "first checks" on the dataset. What variables are in this
-dataset?
+### **q0** Perform your "first checks" on the dataset. What variables are in this dataset?
 
 ```{r q0-task}
-## TASK: Do your "first checks" here!
+
+# structure of dataset
+str(gapminder)
+
+# first few rows
+head(gapminder)
+```
+
+```{r q0-task-2}
+
+# summary of dataset
+summary(gapminder)
 ```
 
 **Observations**:
 
-- Write all variable names here
+Variables:
 
-### __q1__ Determine the most and least recent years in the `gapminder` dataset.
+-   country
+
+-   continent
+
+-   year
+
+-   lifeExp
+
+-   pop
+
+-   gdpPercap
+
+### **q1** Determine the most and least recent years in the `gapminder` dataset.
 
 *Hint*: Use the `pull()` function to get a vector out of a tibble. (Rather than the `$` notation of base R.)
 
 ```{r q1-task}
-## TASK: Find the largest and smallest values of `year` in `gapminder`
-year_max <- NA_real_
-year_min <- NA_real_
+
+# the largest and smallest values of `year` in `gapminder`
+year_max <- gapminder %>% pull(year) %>% max()
+year_min <- gapminder %>% pull(year) %>% min()
+
+year_max
+year_min
 ```
 
 Use the following test to check your work.
@@ -90,32 +116,72 @@ if (is_tibble(year_max)) {
 print("Nice!")
 ```
 
-### __q2__ Filter on years matching `year_min`, and make a plot of the GDP per capita against continent. Choose an appropriate `geom_` to visualize the data. What observations can you make?
+### **q2** Filter on years matching `year_min`, and make a plot of the GDP per capita against continent. Choose an appropriate `geom_` to visualize the data. What observations can you make?
 
 You may encounter difficulties in visualizing these data; if so document your challenges and attempt to produce the most informative visual you can.
 
 ```{r q2-task}
-## TASK: Create a visual of gdpPercap vs continent
+
+# filter data matching year_min
+gapminder_min_year <- gapminder %>%
+  filter(year == year_min)
+
+# Visual of gdpPercap vs continent
+gapminder_min_year %>%
+  ggplot(aes(continent, gdpPercap)) +
+  geom_boxplot() +
+  scale_y_log10() +
+  labs(
+    title = paste("GDP per Capita by Continent in", year_min),
+    x = "Continent",
+    y = "GDP per Capita (Log Scale)"
+  ) +
+  theme_minimal()
 ```
 
 **Observations**:
 
-- Write your observations here
+-   The median GDP per capita in Africa and Asia is significantly lower than in other continents.
+-   Africa has the lowest median GDP per capita, with most values concentrated below \$1000.
+-   Europe’s median GDP per capita distribution is notably higher.
+-   Asia has a greater range between the 25th and 75th percentiles compared to other continents, indicating a greater variation within the GDP per capita of countries in Asia.
+-   Oceania appears to have a high and similar GDP per capita.
+-   The most extreme outlier is in Asia, with a GDP per capita significantly higher than the rest of the dataset. A few outliers also exist in the Americas, likely representing wealthier countries.
 
 **Difficulties & Approaches**:
 
-- Write your challenges and your approach to solving them
+-   When plotting this boxplot on a normal scale for GDP per capita, the majority of the data gets concentrated near the lower end of the GDP scale, making it hard to differentiate between most countries.
+-   Using a logarithmic scale for GDP per capita reveals more detail in the ranges, making it easier to compare distributions across continents.
 
-### __q3__ You should have found *at least* three outliers in q2 (but possibly many more!). Identify those outliers (figure out which countries they are).
+### **q3** You should have found *at least* three outliers in q2 (but possibly many more!). Identify those outliers (figure out which countries they are).
 
 ```{r q3-task}
-## TASK: Identify the outliers from q2
+
+# Outliers from q2
+gdp_outliers <- gapminder_min_year %>%
+  group_by(continent) %>%
+  summarise(
+    q1 = quantile(gdpPercap, 0.2),
+    q3 = quantile(gdpPercap, 0.8),
+    iqr = q3 - q1
+  ) %>%
+  mutate(
+    lower_bound = q1 - 1.5 * iqr,
+    upper_bound = q3 + 1.5 * iqr
+  ) %>%
+  inner_join(gapminder_min_year, by = "continent") %>%
+  filter(gdpPercap < lower_bound | gdpPercap > upper_bound) %>%
+  select(country, continent, year, gdpPercap)
+
+print(gdp_outliers)
 ```
 
 **Observations**:
 
-- Identify the outlier countries from q2
-  - (Your response here)
+-   Outlier countries from q2:
+    -   Africa: South Africa, Gabon, Angola
+    -   Americas: United States, Canada
+    -   Asia: Kuwait, Bahrain
 
 *Hint*: For the next task, it's helpful to know a ggplot trick we'll learn in an upcoming exercise: You can use the `data` argument inside any `geom_*` to modify the data that will be plotted *by that geom only*. For instance, you can use this trick to filter a set of points to label:
 
@@ -133,41 +199,132 @@ gapminder %>%
   )
 ```
 
-### __q4__ Create a plot similar to yours from q2 studying both `year_min` and `year_max`. Find a way to highlight the outliers from q3 on your plot *in a way that lets you identify which country is which*. Compare the patterns between `year_min` and `year_max`.
+### **q4** Create a plot similar to yours from q2 studying both `year_min` and `year_max`. Find a way to highlight the outliers from q3 on your plot *in a way that lets you identify which country is which*. Compare the patterns between `year_min` and `year_max`.
 
 *Hint*: We've learned a lot of different ways to show multiple variables; think about using different aesthetics or facets.
 
 ```{r q4-task}
-## TASK: Create a visual of gdpPercap vs continent
+
+outliers <- c("South Africa", "Gabon", "Angola", "United States", "Canada", "Kuwait", "Bahrain")
+
+# Filter data for year_min & year_max
+gapminder_filtered <- gapminder %>%
+  filter(year %in% c(year_min, year_max))
+
+# Plot
+gapminder_filtered %>%
+  ggplot(aes(continent, gdpPercap)) +
+  geom_boxplot() +
+  geom_point(
+    data = gapminder_filtered %>% filter(country %in% outliers),
+    aes(color = country),
+    size = 3
+  ) +
+  facet_wrap(~year) +
+  scale_y_log10() +
+  labs(
+    title = "GDP per Capita by Continent in Earliest and Latest Years",
+    y = "GDP per Capita (Log Scale)", x = "Continent"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
 ```
 
 **Observations**:
 
-- Write your observations here
+-   Across all continents, GDP per capita has increased from the earliest year (1952) to the latest year (2007) in the data.
+-   The median GDP per capita in all continents has shifted upwards, reflecting global economic growth over time.
+-   The interquartile range has expanded in Africa and Asia, indicating increased economic disparity within these continents. In contrast, continents like Europe and Oceania exhibit a more uniform GDP per capita distribution, with fewer extreme variations.
+-   The identified outliers in 1952 for Asia and Africa no longer seem to be extreme outliers in 2007 as their GDP per capita is in the 75-100 percentile range for the respective continents in 2007.
+-   For Asia specifically, Kuwait was a major outlier in 1952 but its GDP per capita decreased by 2007 whereas Bahrain still had a growth in its GDP per capita even though it wasn't an outlier anymore.
+-   The outliers in 1952 for Americas (United States and Canada) have become more extreme outliers in 2007 when compared to 1952. We can also see that a new outlier country emerged in the Americas and its GDP per capita is significantly below the spread.
+-   Despite economic growth, Africa continues to have the lowest median GDP per capita compared to other continents.
+-   Oceania's GDP per capita has remained relatively higher than other continents in both 1952 and 2007.
 
 # Your Own EDA
+
 <!-- -------------------------------------------------- -->
 
 Now it's your turn! We just went through guided EDA considering the GDP per capita at two time points. You can continue looking at outliers, consider different years, repeat the exercise with `lifeExp`, consider the relationship between variables, or something else entirely.
 
-### __q5__ Create *at least* three new figures below. With each figure, try to pose new questions about the data.
+### **q5** Create *at least* three new figures below. With each figure, try to pose new questions about the data.
 
 ```{r q5-task1}
-## TASK: Your first graph
+
+gapminder %>%
+  ggplot(aes(x = year, y = gdpPercap, color = continent)) +
+  geom_line(stat = "summary", fun = median, linewidth = 1) +
+  scale_y_log10() +
+  labs(
+    title = "Median GDP per Capita Growth Over Time by Continent",
+    x = "Year",
+    y = "GDP per Capita (Log Scale)"
+  )
 ```
 
-- (Your notes and observations here)
+**Observations:**
+
+-   All continents exhibit an increase in GDP per capita over time, suggesting overall economic growth across the globe.
+-   Europe and Oceania have the highest median GDP per capita throughout the period. The gap between them and the other countries remains significant.
+-   When looking at the growth rates, Europe shows steady and consistent growth.
+-   Asia exhibits a strong upward trend, with rapid growth in the later decades, indicating significant economic development in key countries.
+-   The Americas show growth but at a slightly slower rate compared to Europe and Oceania.
+-   Africa shows some growth until around the 1970s but then experiences stagnation and slight decline in GDP per capita until around 2000, after which growth resumes. This suggests economic struggles, possibly due to political instability, resource mismanagement, or other socio-economic challenges.
 
 ```{r q5-task2}
-## TASK: Your second graph
+
+gapminder %>%
+  ggplot(aes(x = gdpPercap, y = lifeExp, color = continent)) +
+  geom_point(alpha = 0.2) +
+  scale_x_log10() +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~continent) +
+  labs(
+    title = "Life Expectancy vs. GDP per Capita by Continent",
+    x = "GDP per Capita (Log Scale)",
+    y = "Life Expectancy"
+  ) +
+  theme_minimal()
 ```
 
-- (Your notes and observations here)
+**Observations:**
+
+-   The scatter plots above grouped by continents show life expectancy vs. GDP per capita with a best-fit line for each continent's data.
+
+-   In every continent, higher GDP per capita is associated with relatively higher life expectancy, which agrees with a well-known economic and public health trend. However, the strength of the relationship varies across continents.
+
+-   The data points in Europe form a tight linear trend, indicating a strong relationship between wealth and longevity. There are few outliers, suggesting relatively even economic development across countries.
+
+-   Compared to other continents, African countries have lower life expectancies at similar GDP per capita levels. The spread is wider, implying greater variation in life expectancy even among countires with similar GDP levels.
+
+-   In Asia, the trend is positive but more dispersed, showing significant variation among countries. Some countries have high GDP per capita but lower-than-expected life expectancy due to possible factors like poor healthcare access or labor conditions (likely in some oil-rich Gulf nations).
+
+-   The Oceania plot is sparse but it looks like all the countries in Oceania seem to have high GDP and positively correlated life expectancy. The correlation is string but based on fewer data points compared to other continents.
+
+-   The Americas show a moderate relationship which is not as strong as Europe. This likely reflects economic disparity between North and South America, with higher GDP per capita nations (e.g., US, Canada) driving up the trend while poorer GDP per capita nations (e.g. some Latin American countries) pull it down.
 
 ```{r q5-task3}
-## TASK: Your third graph
+
+gapminder %>%
+  ggplot(aes(x = year, y = pop, color = continent, group = continent)) +
+  geom_line(stat = "summary", fun = sum, size = 1) +
+  labs(
+    title = "Total Population Growth Over Time by Continent",
+    x = "Year",
+    y = "Total Population"
+  ) +
+  theme_minimal()
 ```
 
-- (Your notes and observations here)
+**Observations:**
 
+-   Asia dominates population growth as it has the highest population, significantly outpacing all other continents with a rapid increase.
 
+-   Africa shows steady growth as its population starts lower but shows a noticeable upward trajectory. The slope suggests accelerating growth as its total population overtakes all other continents except Asia by 2007.
+
+-   Europe's population remains relatively stable compared to Africa, Asia, and the Americas. The growth curve flattens in recent years, suggesting population stagnation or slower growth rates.
+
+-   The Americas have steady growth but at a lower rate compared to Asia and Africa. The increase is visible but not as sharp.
+
+-   Oceania remains consistently low in total population. The growth is present but it is very minimal compared to other countries.

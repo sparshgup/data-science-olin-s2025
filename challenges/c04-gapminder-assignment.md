@@ -260,11 +260,11 @@ gapminder_min_year %>%
   than in other continents.
 - Africa has the lowest median GDP per capita, with most values
   concentrated below \$1000.
-- Europe’s median GDP per capita distribution is notably higher.
+- Oceania’s median GDP per capita distribution is notably higher than
+  all the other continents.
 - Asia has a greater range between the 25th and 75th percentiles
   compared to other continents, indicating a greater variation within
   the GDP per capita of countries in Asia.
-- Oceania appears to have a high and similar GDP per capita.
 - The most extreme outlier is in Asia, with a GDP per capita
   significantly higher than the rest of the dataset. A few outliers also
   exist in the Americas, likely representing wealthier countries.
@@ -432,8 +432,9 @@ gapminder %>%
   significant.
 - When looking at the growth rates, Europe shows steady and consistent
   growth.
-- Asia exhibits a strong upward trend, with rapid growth in the later
-  decades, indicating significant economic development in key countries.
+- Asia exhibits a strong upward trend from the 1950s to the 1980s with
+  rapid growth, indicating significant economic development in key
+  countries during that period.
 - The Americas show growth but at a slightly slower rate compared to
   Europe and Oceania.
 - Africa shows some growth until around the 1970s but then experiences
@@ -447,7 +448,7 @@ gapminder %>%
   ggplot(aes(x = gdpPercap, y = lifeExp, color = continent)) +
   geom_point(alpha = 0.2) +
   scale_x_log10() +
-  geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(method = "lm") +
   facet_wrap(~continent) +
   labs(
     title = "Life Expectancy vs. GDP per Capita by Continent",
@@ -501,7 +502,7 @@ gapminder %>%
 ``` r
 gapminder %>%
   ggplot(aes(x = year, y = pop, color = continent, group = continent)) +
-  geom_line(stat = "summary", fun = sum, size = 1) +
+  geom_line(stat = "summary", fun = sum, linewidth = 1) +
   labs(
     title = "Total Population Growth Over Time by Continent",
     x = "Year",
@@ -509,12 +510,6 @@ gapminder %>%
   ) +
   theme_minimal()
 ```
-
-    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-    ## ℹ Please use `linewidth` instead.
-    ## This warning is displayed once every 8 hours.
-    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-    ## generated.
 
 ![](c04-gapminder-assignment_files/figure-gfm/q5-task3-1.png)<!-- -->
 

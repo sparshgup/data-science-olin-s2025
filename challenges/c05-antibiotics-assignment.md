@@ -91,19 +91,7 @@ antibiotics.
 filename <- "./data/antibiotics.csv"
 
 ## Load the data
-df_antibiotics <- read_csv(filename)
-```
-
-    ## Rows: 16 Columns: 5
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (2): bacteria, gram
-    ## dbl (3): penicillin, streptomycin, neomycin
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
-``` r
+df_antibiotics <- read_csv(filename, show_col_types = FALSE)
 df_antibiotics %>% knitr::kable()
 ```
 
@@ -165,14 +153,15 @@ is Gram positive or negative.
 
 ``` r
 df_long %>%
+  mutate(bacteria = fct_reorder(bacteria, MIC)) %>%
   ggplot(aes(antibiotic, bacteria, fill = MIC)) +
   geom_tile() +
-  scale_fill_viridis_c(trans = "log10") +
+  scale_fill_gradient2(midpoint = 0.1, trans = "log10") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   labs(
     title = "MIC values of Antibiotics for Bacteria",
-    x = "Antibiotic", 
+    x = "Antibiotic",
     y = "Bacteria"
   ) +
   facet_wrap(~gram, scales = "free_y")
@@ -192,17 +181,20 @@ your other visuals.
 
 ``` r
 df_long %>%
+  mutate(bacteria = fct_reorder(bacteria, MIC)) %>%
   ggplot(aes(bacteria, MIC, fill = antibiotic)) +
   geom_bar(stat = "identity", position = "dodge") +
   scale_y_log10() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  geom_hline(yintercept = 0.1, linetype = "dashed", color = "red", linewidth = 0.5) + 
+  annotate("text", x = Inf, y = 0.1, label = "MIC = 0.1 threshold", vjust = 2, hjust = 2.75, color = "red", size = 1.25) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
   labs(
     title = "MIC Values of Antibiotics for Each Bacteria",
     x = "Bacteria", 
     y = "MIC (log scale)", 
     fill = "Antibiotic"
   ) +
-  facet_wrap(~gram)
+  facet_wrap(~gram, scales = "free_x")
 ```
 
 ![](c05-antibiotics-assignment_files/figure-gfm/q1.2-1.png)<!-- -->
@@ -221,6 +213,8 @@ df_long %>%
   ggplot(aes(antibiotic, MIC, fill = gram)) +
   geom_boxplot() +
   scale_y_log10() +
+  geom_hline(yintercept = 0.1, linetype = "dashed", color = "red", linewidth = 0.5) + 
+  annotate("text", x = Inf, y = 0.1, label = "MIC = 0.1 threshold", vjust = -1, hjust = 4, color = "red", size = 2) +
   labs(
     title = "Distribution of MIC Values by Antibiotic",
     x = "Antibiotic", 
@@ -296,7 +290,7 @@ df_long %>%
     x = "Antibiotic", 
     y = "MIC (log scale)", 
     color = "Gram Staining"
-  )
+  ) 
 ```
 
 ![](c05-antibiotics-assignment_files/figure-gfm/q1.5-1.png)<!-- -->

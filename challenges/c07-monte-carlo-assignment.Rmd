@@ -24,7 +24,7 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 <!-- ------------------------- -->
 
 | Category | Needs Improvement | Satisfactory |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | Effort | Some task **q**'s left unattempted | All task **q**'s attempted |
 | Observed | Did not document observations, or observations incorrect | Documented correct observations based on analysis |
 | Supported | Some observations not clearly supported by analysis | All observations clearly supported by analysis (table, graph, etc.) |
@@ -197,13 +197,13 @@ Using your data in `df_q1`, estimate $\pi$.
 
 ```{r q3-task}
 ## Estimate pi using your data from q1
+df_q1 <- df_q1 %>%
+  mutate(inside_circle = x^2 + y^2 <= 1)
 df_q3 <-
   df_q1 %>%
-  mutate(
-    inside_circle = x^2 + y^2 <= 1,
-    stat_value = stat(x, y)
-  ) %>%
+  mutate(stat_value = stat(x, y)) %>%
   summarise(pi_est = mean(stat_value))
+
 df_q3
 ```
 
@@ -244,10 +244,7 @@ df_q4 <-
       splits,
       function(split_df) {
         analysis(split_df) %>%
-          mutate(
-            inside_circle = x^2 + y^2 <= 1,
-            stat_value = stat(x, y)
-          ) %>%
+          mutate(stat_value = stat(x, y)) %>%
           summarise(pi_est = mean(stat_value)) %>%
           pull(pi_est)
       }
@@ -295,9 +292,10 @@ Compute a CLT-based confidence interval for $\pi$ at the 95% confidence level (`
 ```{r q6-task}
 df_q6 <-
   df_q1 %>%
+  mutate(stat_value = stat(x, y)) %>%
   summarize(
-    pi_mean = 4 * mean((x^2 + y^2) <= 1), 
-    pi_sd = 4 * sd((x^2 + y^2) <= 1) / sqrt(n()),     
+    pi_mean = mean(stat_value), 
+    pi_sd = sd(stat_value) / sqrt(n()),     
     pi_lo = pi_mean - 1.96 * pi_sd,
     pi_up = pi_mean + 1.96 * pi_sd
   )
@@ -308,8 +306,8 @@ df_q6
 **Observations**:
 
 -   Does your intervals include the true value of $\pi$?
-    -   Bootstrap CI: Yes, since 3.122 \<= pi \<= 3.1872.
-    -   CLT CI: Yes, since 3.123199 \<= pi \<= 3.187201.
+    -   Bootstrap CI: Yes, since 3.1072 \<= pi \<= 3.17321.
+    -   CLT CI: Yes, since 3.10779 \<= pi \<= 3.17221.
 -   How closely do your bootstrap CI and CLT CI agree?
     -   They both provide similar estimates for pi with very small difference in bounds. This suggests the normality assumption used in the CLT method is reasonable.
 -   Comment on the width of your CI(s). Would your estimate of $\pi$ be good enough for roughly estimating an area (e.g., to buy enough paint for an art project)? Would your estimate of $\pi$ be good enough for precisely calculating a trajectory (e.g., sending a rocket into orbit)?

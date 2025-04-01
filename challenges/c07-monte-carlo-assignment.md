@@ -302,18 +302,18 @@ Using your data in `df_q1`, estimate $\pi$.
 
 ``` r
 ## Estimate pi using your data from q1
+df_q1 <- df_q1 %>%
+  mutate(inside_circle = x^2 + y^2 <= 1)
 df_q3 <-
   df_q1 %>%
-  mutate(
-    inside_circle = x^2 + y^2 <= 1,
-    stat_value = stat(x, y)
-  ) %>%
+  mutate(stat_value = stat(x, y)) %>%
   summarise(pi_est = mean(stat_value))
+
 df_q3
 ```
 
     ##   pi_est
-    ## 1 3.1388
+    ## 1 3.1252
 
 Use the following to check that you’ve used the correct variable names.
 (NB. This does not check correctness.)
@@ -369,10 +369,7 @@ df_q4 <-
       splits,
       function(split_df) {
         analysis(split_df) %>%
-          mutate(
-            inside_circle = x^2 + y^2 <= 1,
-            stat_value = stat(x, y)
-          ) %>%
+          mutate(stat_value = stat(x, y)) %>%
           summarise(pi_est = mean(stat_value)) %>%
           pull(pi_est)
       }
@@ -422,7 +419,7 @@ df_q5
     ## # A tibble: 1 × 2
     ##   pi_lo pi_up
     ##   <dbl> <dbl>
-    ## 1  3.11  3.17
+    ## 1  3.09  3.16
 
 ### **q6** CLT confidence interval
 
@@ -440,9 +437,10 @@ done something *wrong* in one of the tasks….
 ``` r
 df_q6 <-
   df_q1 %>%
+  mutate(stat_value = stat(x, y)) %>%
   summarize(
-    pi_mean = 4 * mean((x^2 + y^2) <= 1), 
-    pi_sd = 4 * sd((x^2 + y^2) <= 1) / sqrt(n()),     
+    pi_mean = mean(stat_value), 
+    pi_sd = sd(stat_value) / sqrt(n()),     
     pi_lo = pi_mean - 1.96 * pi_sd,
     pi_up = pi_mean + 1.96 * pi_sd
   )
@@ -451,13 +449,13 @@ df_q6
 ```
 
     ##   pi_mean      pi_sd    pi_lo    pi_up
-    ## 1  3.1388 0.01644203 3.106574 3.171026
+    ## 1  3.1252 0.01653541 3.092791 3.157609
 
 **Observations**:
 
 - Does your intervals include the true value of $\pi$?
-  - Bootstrap CI: Yes, since 3.122 \<= pi \<= 3.1872.
-  - CLT CI: Yes, since 3.123199 \<= pi \<= 3.187201.
+  - Bootstrap CI: Yes, since 3.1072 \<= pi \<= 3.17321.
+  - CLT CI: Yes, since 3.10779 \<= pi \<= 3.17221.
 - How closely do your bootstrap CI and CLT CI agree?
   - They both provide similar estimates for pi with very small
     difference in bounds. This suggests the normality assumption used in

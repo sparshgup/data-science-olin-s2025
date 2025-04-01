@@ -173,7 +173,18 @@ To check your results, this is Table `B01003`.
 
 file_path <- "data/ACSDT5Y2018.B01003-Data.csv"
 
-df_pop <- read_csv(file_path, skip = 2, col_names = c("id", "Geographic Area Name", "Estimate!!Total", "Margin of Error!!Total"), show_col_types = FALSE)
+df_pop <-
+  read_csv(
+    file_path,
+    skip = 2,
+    col_names = c(
+      "id",
+      "Geographic Area Name",
+      "Estimate!!Total",
+      "Margin of Error!!Total"
+    ),
+    show_col_types = FALSE
+  )
 df_pop <- df_pop[, 1:4]
 
 head(df_pop)
@@ -557,9 +568,24 @@ Compute the mean and standard deviation for `cases_per100k` and
 include in your summaries,* and justify why!
 
 ``` r
-## Compute mean and sd for cases_per100k and deaths_per100k
+## outlier populations
+pop_stats <- quantile(df_normalized$population, probs = c(0.2, 0.8), na.rm = TRUE)
+iqr_pop <- pop_stats[2] - pop_stats[1]
+lower_bound_pop <- pop_stats[1] - 1.5 * iqr_pop
+upper_bound_pop <- pop_stats[2] + 1.5 * iqr_pop
+
+## outlier dates
+case_threshold <- quantile(df_normalized$cases_per100k, 0.95, na.rm = TRUE)
+death_threshold <- quantile(df_normalized$deaths_per100k, 0.95, na.rm = TRUE)
+
+## Compute mean and sd
 df_summary <- df_normalized %>%
-  filter(!is.na(population) & population > 0 & !is.na(cases_per100k) & !is.na(deaths_per100k)) %>%
+  filter(
+    population > lower_bound_pop & population < upper_bound_pop, 
+    cases_per100k < case_threshold, 
+    deaths_per100k < death_threshold, 
+    !is.na(population) & !is.na(cases_per100k) & !is.na(deaths_per100k)
+  ) %>%
   summarise(
     mean_cases_per100k = mean(cases_per100k, na.rm = TRUE),
     sd_cases_per100k = sd(cases_per100k, na.rm = TRUE),
@@ -573,17 +599,26 @@ df_summary
     ## # A tibble: 1 × 4
     ##   mean_cases_per100k sd_cases_per100k mean_deaths_per100k sd_deaths_per100k
     ##                <dbl>            <dbl>               <dbl>             <dbl>
-    ## 1             10094.            8484.                174.              159.
+    ## 1              8637.            7020.                147.              129.
 
 - Which rows did you pick?
-  - Rows where the `population` is not missing and greater than zero.
-  - Rows where `cases_per100k` and `deaths_per100k` are not missing
-    (`NA`).
+
+  - Rows where population is not missing and is within a reasonable
+    range (removing extreme outliers using the interquartile range).
+
+  <!-- -->
+
+  - Rows where cases_per100k and deaths_per100k are not missing and are
+    below the 95th percentile (to exclude extreme spikes).
+
 - Why?
+
   - Missing or zero population values would cause division errors in
     normalization and also lead to incorrect statistical caluculations.
   - Some early data points may be misleading due to underreporting or
     lack of widespread testing.
+  - Removing extreme population outliers prevents heavily populated
+    counties from disproportionately influencing the summary statistics.
 
 ### **q7** Find and compare the top 10
 
@@ -661,10 +696,10 @@ top_10_deaths
   - So, this could mean that these counties remained among the hardest
     hit from COVID-19 for an extended period.
 - Comparison:
-  - Mean cases per 100k from q6: 10,093.54
-  - Mean deaths per 100k from q6: 174.31
-  - The top counties for cases per 100k are approximately 20 times
-    higher and the deaths per 100k are approximately 8 times higher.
+  - Mean cases per 100k from q6: 8636.646
+  - Mean deaths per 100k from q6: 147.4731
+  - The top counties for cases per 100k are approximately 22 times
+    higher and the deaths per 100k are approximately 5 times higher.
 - When did these “largest values” occur?
   - For top 10 cases per 100k, all the largest values occur in May 2022.
   - For top 10 deaths per 100k, all the largest values occur in February
@@ -724,7 +759,7 @@ df_normalized %>%
   - This also suggests that small countries experience high fluctuations
     in case rates, likely due to their small populations and that people
     potentially got reinfected with COVID-19 multiple times. This data
-    for small counties biases the overall data for cases per 100 k and
+    for small counties biases the overall data for cases per 100k and
     deaths per 100k, and doesn’t really indicate the trends for medium
     (50k-500k population) and large (\>500k population) counties.
 

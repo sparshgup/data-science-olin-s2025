@@ -543,6 +543,7 @@ df_data %>%
   geom_point(alpha = 0.7) +  
   geom_smooth(method = "loess", se = FALSE, color = "black") +  
   scale_x_log10() +
+  scale_y_log10() +
   labs(
     x = "Population (log scale)",
     y = "Standard Error of Median Household Income",
@@ -571,7 +572,12 @@ df_data %>%
   - This trend probably exists because larger sample sizes reduce
     uncertainty in statistical estimates. A county with a higher
     population provides more data points, making the income estimates
-    more reliable.
+    more reliable. This is based on the assumption that the Census
+    bureau gathers a larger sample from counties with larger
+    populations. However, this reasoning could be invalid if the Census
+    bureau used a fixed size of samples for each county, and in that
+    case, there possibly might be a different explanation for this
+    trend.
 - What does this *overall* trend tell you about the relative ease of
   studying small vs large counties?
   - Small counties are harder to study because they exhibit greater
